@@ -10,6 +10,8 @@
 | **학습 시간** | v1: 6분 43초 · v2: 47분 |
 | **레퍼런스** | LLaVA-1.5 (Liu et al., 2023) — 정확히 같은 2-Stage 레시피 재현 |
 | **사전 학습 가중치** | 🤗 [AD-Styles/mini-llava-stage2](https://huggingface.co/AD-Styles/mini-llava-stage2) (HuggingFace Hub) |
+| **🚀 Live Demo** | [Hugging Face Spaces](https://huggingface.co/spaces/AD-Styles/mini-llava-demo) — 브라우저에서 즉시 체험 (설치 0) |
+
 
 ---
 
@@ -49,8 +51,6 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
 
 **대표 응답 (강아지 사진):**
 
-![v1 강아지 응답](assets/v1_dog_response.png)
-
 > Q: "What is in this image?" → A: "A black and white dog in a red frisbee stands on the beach."
 
 **진단:** "dog" 키워드만 정확. 나머지(frisbee, beach, black) 모두 환각. 모델이 **Flickr30k 캡션 패턴(`A [person] in [clothes] is [verb]`)을 모방할 뿐, 질문에 응답하는 능력 부재.** LLaVA 논문 §4.2 의 "Stage 1 alignment 한계" 와 일치.
@@ -63,6 +63,11 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
 
 #### Test A — 영문 VQA (강아지 사진, v1과 동일 입력)
 
+<p align="center">
+  <img src="assets/source_dog.jpg" width="220" alt="강아지 입력 이미지"><br>
+  <em>입력 이미지 (Test A · B 공통)</em>
+</p>
+
 | 질문 | v2 응답 | 시간 | v1 비교 |
 |------|---------|------|---------|
 | What is in this image? | **Dog.** | 2.43s | "frisbee on beach" 환각 |
@@ -70,10 +75,6 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
 | Is the dog wearing anything on its head? | **Yes.** ✅ | 0.46s | (미테스트) |
 | What is on the dog's head? | **Hat.** ✅ | 0.51s | (미테스트) |
 | Describe this image in one sentence. | "In this image I can see a cat on the floor." ⚠️ | 1.58s | (미테스트) |
-
-| ![Test A1](assets/test_a_q1.png) | ![Test A2](assets/test_a_q2.png) | ![Test A3](assets/test_a_q3.png) | ![Test A4](assets/test_a_q4.png) | ![Test A5](assets/test_a_q5.png) |
-|:---:|:---:|:---:|:---:|:---:|
-| Q1 What is | Q2 Color | Q3 Yes/No | Q4 Object | Q5 Describe |
 
 **🎯 핵심 발견 — Instruction Tuning 의 결정적 증거:**
 
@@ -92,10 +93,6 @@ v2는 **질문 형식에 따라 응답 포맷을 자동으로 바꿉니다** (�
 | 이 강아지는 머리에 무엇을 쓰고 있나요? | **"개."** | 🔍 **분석의 결정적 증거** |
 | 이 이미지를 한 문장으로 설명해 주세요. | "In this picture I can see a cat..." | ⚠️ 영어로 fallback |
 
-| ![Test B1](assets/test_b_q1.png) | ![Test B2](assets/test_b_q2.png) | ![Test B3](assets/test_b_q3.png) | ![Test B4](assets/test_b_q4.png) |
-|:---:|:---:|:---:|:---:|
-| B1 한국어 일반 | B2 색상 | B3 ★ 객체 (smoking gun) | B4 묘사 |
-
 **🔍 핵심 발견 — LoRA의 Catastrophic Forgetting 정량 입증:**
 
 B3 응답 **"개."** 가 모델 내부를 그대로 보여줍니다:
@@ -109,16 +106,17 @@ B3 응답 **"개."** 가 모델 내부를 그대로 보여줍니다:
 
 #### Test C — 피카츄 (OOD: 만화 캐릭터)
 
+<p align="center">
+  <img src="assets/source_pikachu.png" width="280" alt="피카츄 입력 이미지"><br>
+  <em>입력 이미지 (OOD: 학습 분포 외부의 만화 캐릭터)</em>
+</p>
+
 | 질문 | v2 응답 | 정답 | 모델 내부 추론 (추정) |
 |------|---------|------|---------------------|
 | What is in this image? | "Giraffe." | Pikachu | 노랑+검정 패턴 → 학습 분포 중 가장 가까운 동물 |
 | What color is the main character? | "White." | Yellow | Main subject 인식 실패 → 가장 두드러진 영역(흰 모자) |
 | What is the character wearing on its head? | "Tie." | Hat | 공간 localization 실패 + 몸의 검은 띠를 넥타이로 |
 | Describe this image in one sentence. | "In this image we can see a human figure..." | 만화 캐릭터 | 이족보행 + 팔 들기 자세 → 인간 형상으로 추상화 |
-
-| ![Test C1](assets/test_c_q1.png) | ![Test C2](assets/test_c_q2.png) | ![Test C3](assets/test_c_q3.png) | ![Test C4](assets/test_c_q4.png) |
-|:---:|:---:|:---:|:---:|
-| C1 Giraffe | C2 White | C3 Tie | C4 Human figure |
 
 **🔍 핵심 발견 — "랜덤 환각이 아닌 체계적 오류":**
 
@@ -236,6 +234,11 @@ v1 결과를 분석하고 **3가지 옵션** 을 검토:
 ---
 
 ## 🚀 실행
+
+### 옵션 0 — 설치 없이 브라우저에서 (즉시) ⭐
+🚀 **[Hugging Face Spaces 데모](https://huggingface.co/spaces/AD-Styles/mini-llava-demo)** — 클릭 한 번. 면접관 / 리뷰어용 추천.
+
+> ⚠️ 이 데모는 **v2 (현재 README 의 결과 그대로)** 입니다 — 한국어 / OOD 한계 그대로 노출. v3 완성 후 production 버전 별도 배포 예정.
 
 ### 옵션 A — 사전 학습 가중치로 바로 데모 (5분)
 ```bash

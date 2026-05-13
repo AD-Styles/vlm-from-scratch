@@ -1,0 +1,10 @@
+torch>=2.1.0
+torchvision
+transformers>=4.45.0
+peft>=0.10.0
+huggingface_hub>=0.20.0
+pillow>=10.0.0
+gradio>=4.20.0
+einops
+sentencepiece
+protobuf
