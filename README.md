@@ -1,14 +1,15 @@
 # Mini-LLaVA from Scratch
 
-> CLIP과 GPT를 직접 조립해 만든 멀티모달 LLM. **결과의 완벽함보다 "한계를 정량적으로 분석하고 다음 단계를 도출하는" 반복 사이클** 의 기록입니다.
+> CLIP-ViT 와 Qwen2.5 를 직접 조립해 만든 멀티모달 LLM. **결과의 완벽함보다 "한계 분석 → 다음 단계 도출" 의 반복 사이클** 을 기록한 포트폴리오입니다.
 
 | | |
 |---|---|
 | **Backbone** | CLIP-ViT-B/32 + Qwen2.5-0.5B-Instruct |
 | **학습 환경** | RTX 4060 Laptop · 8GB VRAM (단일 노트북) |
-| **학습 가능 파라미터** | v1: 1.49M · v2: 3.66M (전체의 0.66%) |
+| **학습 가능 파라미터** | v1: 1.49M · v2: 3.66M (전체의 0.6%) |
 | **학습 시간** | v1: 6분 43초 · v2: 47분 |
-| **레퍼런스** | LLaVA-1.5 (Liu et al., 2023) — 정확히 같은 2-Stage 레시피 재현 |
+| **결과 요약** | 영문 VQA **4/5** ✅ · 한국어 ⚠️ catastrophic forgetting · OOD ⚠️ 환각 ([상세](#-results)) |
+| **레퍼런스** | LLaVA-1.5 (Liu et al., 2023) — 동일한 2-Stage 레시피의 mini 버전 (9K 샘플) |
 | **사전 학습 가중치** | 🤗 [AD-Styles/mini-llava-stage2](https://huggingface.co/AD-Styles/mini-llava-stage2) (HuggingFace Hub) |
 | **🚀 Live Demo** | [Hugging Face Spaces](https://huggingface.co/spaces/AD-Styles/mini-llava-demo) — 브라우저에서 즉시 체험 (설치 0) |
 
