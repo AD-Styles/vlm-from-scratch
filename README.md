@@ -43,7 +43,7 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
 
 ★ 표시가 직접 구현 (`src/model.py`). HuggingFace `LlavaForConditionalGeneration` 같은 고수준 추상화 미사용.
 
-> **Stage 1 (v1)** = projector 만 학습 · **Stage 2 (v2)** = projector + LoRA 동시 학습 ([회고록 §Step 2 참조](#-회고록-retrospective))
+> **Stage 1 (v1)** = projector 만 학습 · **Stage 2 (v2)** = projector + LoRA 동시 학습
 
 ---
 
