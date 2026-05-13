@@ -8,7 +8,7 @@
 | **학습 환경** | RTX 4060 Laptop · 8GB VRAM (단일 노트북) |
 | **학습 가능 파라미터** | v1: 1.49M · v2: 3.66M (전체의 0.6%) |
 | **학습 시간** | v1: 6분 43초 · v2: 47분 |
-| **결과 요약** | 영문 VQA **4/5** ✅ · 한국어 ⚠️ catastrophic forgetting · OOD ⚠️ 환각 ([상세](#-results)) |
+| **결과 요약** | 영문 VQA **4/5** ✅ · 한국어 ⚠️ catastrophic forgetting · OOD ⚠️ 환각 ([상세](#-결과-results)) |
 | **레퍼런스** | LLaVA-1.5 (Liu et al., 2023) — 동일한 2-Stage 레시피의 mini 버전 (9K 샘플) |
 | **사전 학습 가중치** | 🤗 [AD-Styles/mini-llava-stage2](https://huggingface.co/AD-Styles/mini-llava-stage2) (HuggingFace Hub) |
 | **🚀 Live Demo** | [Hugging Face Spaces](https://huggingface.co/spaces/AD-Styles/mini-llava-demo) — 브라우저에서 즉시 체험 (설치 0) |
@@ -16,7 +16,7 @@
 
 ---
 
-## 🧠 Architecture
+## 🧠 아키텍처 (Architecture)
 
 LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 아니라, 두 모달리티 간의 "통역사"(projector) + 작은 LoRA 만 학습.**
 
@@ -44,21 +44,23 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
 
 ★ 표시가 직접 구현 (`src/model.py`). HuggingFace `LlavaForConditionalGeneration` 같은 고수준 추상화 미사용.
 
-> **Stage 1 (v1)** = projector 만 학습 · **Stage 2 (v2)** = projector + LoRA 동시 학습 ([회고 §Step 2 참조](#-회고--개선의-여정))
+> **Stage 1 (v1)** = projector 만 학습 · **Stage 2 (v2)** = projector + LoRA 동시 학습 ([회고록 §Step 2 참조](#-회고록-retrospective))
 
 ---
 
-## 📊 Results
+## 📊 결과 (Results)
 
 ### v1 — Stage 1 Baseline (Projector Alignment)
 
-5,000 Flickr30k caption 으로 projector 만 학습. **최종 loss: 2.4403**.
+**학습 설정:** Flickr30k 5K caption · projector 만 학습 · 1 epoch · lr 1e-3 · 6분 43초 · **최종 loss 2.4403**
 
 **대표 응답 (강아지 사진):**
 
 > Q: "What is in this image?" → A: "A black and white dog in a red frisbee stands on the beach."
 
-**진단:** "dog" 키워드만 정확. 나머지(frisbee, beach, black) 모두 환각. 모델이 **Flickr30k 캡션 패턴(`A [person] in [clothes] is [verb]`)을 모방할 뿐, 질문에 응답하는 능력 부재.** LLaVA 논문 §4.2 의 "Stage 1 alignment 한계" 와 일치.
+**진단:** "dog" 키워드만 정확. 나머지(frisbee, beach, black) 모두 환각. 모델이 **Flickr30k 캡션 패턴(`A [person] in [clothes] is [verb]`)을 모방할 뿐, 질문에 응답하는 능력 부재.** LLaVA-1.5 논문 ([Liu et al., 2023, §4.1](https://arxiv.org/abs/2310.03744)) 의 "Stage 1 alignment limitations" 와 일치.
+
+> 💭 왜 캡션 패턴만 모방하나? Stage 1 은 image embedding 을 LLM 공간에 "정렬" 만 하고 instruction-following 학습은 안 하기 때문. → Stage 2 가 필요한 이유 ([회고록 §Step 2 참조](#-회고록-retrospective))
 
 ---
 
@@ -73,19 +75,23 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
   <em>입력 이미지 (Test A · B 공통)</em>
 </p>
 
-| 질문 | v2 응답 | 시간 | v1 비교 |
-|------|---------|------|---------|
-| What is in this image? | **Dog.** | 2.43s | "frisbee on beach" 환각 |
-| What color is the dog? | **White.** ✅ | 0.47s | (미테스트) |
-| Is the dog wearing anything on its head? | **Yes.** ✅ | 0.46s | (미테스트) |
-| What is on the dog's head? | **Hat.** ✅ | 0.51s | (미테스트) |
-| Describe this image in one sentence. | "In this image I can see a cat on the floor." ⚠️ | 1.58s | (미테스트) |
+> 측정 환경: RTX 4060 Laptop GPU · `do_sample=True, T=0.7, top_p=0.9`
+
+| 질문 | v2 응답 | 시간 |
+|------|---------|------|
+| What is in this image? | **Dog.** | 2.43s |
+| What color is the dog? | **White.** ✅ | 0.47s |
+| Is the dog wearing anything on its head? | **Yes.** ✅ | 0.46s |
+| What is on the dog's head? | **Hat.** ✅ | 0.51s |
+| Describe this image in one sentence. | "In this image I can see a cat on the floor." ⚠️ | 1.58s |
 
 **🎯 핵심 발견 — Instruction Tuning 의 결정적 증거:**
 
-v2는 **질문 형식에 따라 응답 포맷을 자동으로 바꿉니다** (단어 / 색상 / Yes-No / 객체 / 문장). v1은 어떤 질문에도 똑같은 caption 패턴만 뱉었던 것과 명백한 대비. 시각적 정확도도 **v1 미테스트 (Q1 외 1문항만 측정) → v2 4/5 (80%)**.
+v2는 **질문 형식에 따라 응답 포맷을 자동으로 바꿉니다** (단어 / 색상 / Yes-No / 객체 / 문장). 동일 입력의 v1 Q1 응답 — *"A black and white dog in a red frisbee stands on the beach."* — 같은 Flickr30k 캡션 패턴 모방과 명백한 대비. 시각적 정확도 **v1 0/1 (Q1 만 측정) → v2 4/5 (80%)**.
 
-> Test A 의 마지막 행 (Q5 "Describe...") 에서의 "cat" 혼동: 헬로키티(고양이 캐릭터) 모자 패턴이 main object 인식에 영향. CLIP-ViT-B/32 의 49 patch (7×7) 해상도로는 강아지 얼굴 + 모자 위 고양이 얼굴이 모호해짐.
+> 💭 v2 가 잘하는 이유: 학습 시 **assistant 응답 토큰만 loss** (instruction-only label masking) → 모델이 "질문에 답하는" 패턴 학습. v1 은 전체 caption 의 next-token loss → "Flickr30k 캡션 모방" 만 학습.
+
+> Test A 의 마지막 행 (Q5 "Describe...") 에서의 "cat" 혼동: 헬로키티(고양이 캐릭터) 모자 패턴이 main object 인식에 영향. CLIP-ViT-B/32 의 49 patch (7×7) 해상도로는 강아지 얼굴 + 모자 위 고양이 얼굴이 모호해짐. **→ v3 의 CLIP-ViT-L/14 (576 patch) 업그레이드 motivation 의 직접적 증거** ([회고록 §Step 6 참조](#-회고록-retrospective)).
 
 ---
 
@@ -133,7 +139,7 @@ B3 응답 **"개."** 가 모델 내부를 그대로 보여줍니다:
 
 ---
 
-## 💡 회고 — 개선의 여정
+## 💡 회고록 (Retrospective)
 
 > 이 프로젝트는 **단발성 결과물이 아니라 5단계 의사결정 사이클** 의 기록입니다. 각 단계에서 어떤 한계를 발견하고, 어떤 옵션을 검토했고, 왜 그 선택을 했는지 정리합니다.
 
@@ -215,7 +221,7 @@ v1 결과를 분석하고 **3가지 옵션** 을 검토:
 
 ---
 
-## ⚠️ Limitations (정직한 한계 명시)
+## ⚠️ 한계 (Limitations) — 정직한 한계 명시
 
 | 한계 | 진단 | 해결 방향 |
 |------|------|----------|
@@ -228,7 +234,7 @@ v1 결과를 분석하고 **3가지 옵션** 을 검토:
 
 ---
 
-## 🔗 Portfolio Connections
+## 🔗 포트폴리오 연결 (Portfolio Connections)
 
 - **[clip-from-scratch](https://github.com/AD-Styles/clip-from-scratch)** — Vision encoder + 대조학습 원리 (이 프로젝트의 시각 인코더 지식 기반)
 - **[gpt-from-scratch](https://github.com/AD-Styles/gpt-from-scratch)** — Decoder-only Transformer (LLM 백본 동작 원리)
@@ -238,7 +244,7 @@ v1 결과를 분석하고 **3가지 옵션** 을 검토:
 
 ---
 
-## 🚀 실행
+## 🚀 실행 (How to Run)
 
 ### 옵션 0 — 설치 없이 브라우저에서 (즉시) ⭐
 🚀 **[Hugging Face Spaces 데모](https://huggingface.co/spaces/AD-Styles/mini-llava-demo)** — 클릭 한 번. 면접관 / 리뷰어용 추천.
@@ -269,7 +275,7 @@ python -m src.train --data-path data/instruct_subset/manifest.json --output-dir 
 
 ---
 
-## 📚 References
+## 📚 참고 문헌 (References)
 
 - Liu et al., **"Visual Instruction Tuning"** (LLaVA-1, NeurIPS 2023) — [arxiv:2304.08485](https://arxiv.org/abs/2304.08485)
 - Liu et al., **"Improved Baselines with Visual Instruction Tuning"** (LLaVA-1.5, 2023) — [arxiv:2310.03744](https://arxiv.org/abs/2310.03744)
