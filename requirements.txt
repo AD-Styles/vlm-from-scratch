@@ -1,0 +1,12 @@
+torch>=2.6.0
+torchvision>=0.21.0
+transformers>=4.45.0
+accelerate>=0.30.0
+peft>=0.10.0
+datasets>=2.18.0
+pillow>=10.0.0
+gradio>=4.20.0
+einops>=0.7.0
+sentencepiece>=0.1.99
+protobuf>=4.25.0
+tqdm>=4.66.0

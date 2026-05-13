@@ -1,0 +1,31 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+checkpoints/*
+!checkpoints/.gitkeep
+
+data/
+*.pt
+*.bin
+*.safetensors
+
+.ipynb_checkpoints/
+.DS_Store
+.idea/
+.vscode/
+
+# 학습 완료 마커 (로컬 전용)
+TRAINING_DONE.txt
+
+# 혹시 모를 토큰 파일 (절대 commit 금지)
+hf_*.txt
+*token*.txt
+*.token
+
+# 사용자 캡처 스크린샷 (선택 — 보존하려면 이 두 줄 제거)
+# assets/*.png
+# assets/*.jpg
