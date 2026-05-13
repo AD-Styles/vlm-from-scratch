@@ -191,7 +191,7 @@ v1 결과를 분석하고 **3가지 옵션** 을 검토:
 
 ### Step 5 — 배포 용이성 시도 (실패에서 배운 것)
 
-학습 완료 후, 1GB adapter 를 GitHub 100MB 제한에 맞추기 위해 **순수 LoRA 추출** 을 시도했습니다.
+학습 완료 후, 1GB adapter 를 GitHub 100MB 제한에 맞추기 위해 **순수 LoRA 추출** 을 시도.
 
 **가설 (실패):** PEFT 가 저장한 `embed_tokens` / `lm_head` (총 ~1GB) 는 학습되지 않은 단순 보존용. 제거 후에도 inference 시 `resize_token_embeddings` 가 동적으로 재생성하므로 무영향. → 8.68 MB 슬림 adapter 로 충분할 것.
 
