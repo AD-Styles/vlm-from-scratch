@@ -74,8 +74,6 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
   <em>입력 이미지 (Test A · B 공통)</em>
 </p>
 
-> 측정 환경: RTX 4060 Laptop GPU · `do_sample=True, T=0.7, top_p=0.9`
-
 | 질문 | v2 응답 | 시간 |
 |------|---------|------|
 | What is in this image? | **Dog.** | 2.43s |
