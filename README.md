@@ -18,14 +18,16 @@
 
 ## 🧠 Architecture
 
-LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 아니라, 두 모달리티 간의 "통역사"(projector) + 작은 LoRA 만 학습한다.**
+LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 아니라, 두 모달리티 간의 "통역사"(projector) + 작은 LoRA 만 학습.**
+
+> CLIP의 patch grid: 입력 224×224 / patch 32px = 7 → **7×7 = 49 patch**.
 
 ```
    Image (224×224)              Text + <image> placeholder
         │                                  │
         ▼                                  ▼
    CLIP-ViT-B/32 (frozen)            Tokenizer + Embeds
-        │ [49, 768]                        │ [L, 896]
+        │ [49, 768]                        │ [L=text_len, 896]
         ▼                                  │
    ★ MLP Projector (학습)                  │
         │ [49, 896]                        │
@@ -37,10 +39,12 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
    Qwen2.5-0.5B (frozen + ★ LoRA on q/k/v/o)
                  │
                  ▼
-              "A red cat..."
+       "Dog. The dog is wearing a hat."
 ```
 
 ★ 표시가 직접 구현 (`src/model.py`). HuggingFace `LlavaForConditionalGeneration` 같은 고수준 추상화 미사용.
+
+> **Stage 1 (v1)** = projector 만 학습 · **Stage 2 (v2)** = projector + LoRA 동시 학습 ([회고 §Step 2 참조](#-회고--개선의-여정))
 
 ---
 
