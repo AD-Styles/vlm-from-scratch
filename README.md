@@ -216,7 +216,7 @@ v1 결과를 분석하고 **3가지 옵션** 을 검토:
 
 **결정:** Hugging Face Hub 으로 1GB 그대로 배포 → 위의 [Pre-trained 가중치 링크](https://huggingface.co/AD-Styles/mini-llava-stage2) 참조.
 
-### Step 6 — 다음으로 무엇을 할 것인가 (v3 로드맵)
+### Step 6 — 다음으로 무엇을 할 것인가? (v3 로드맵)
 
 1. **한국어 instruction 데이터 30%+ 추가** — KoLLaVA / KoVQA / DeepL 번역 → catastrophic forgetting 해소
 2. **CLIP-ViT-L/14 (576 patches) 업그레이드** — 49 → 576 patch (16배 해상도) → 세부/OOD 인식 ↑
