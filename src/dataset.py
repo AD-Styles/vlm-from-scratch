@@ -39,7 +39,7 @@ def encode_for_training(
     tokenizer: PreTrainedTokenizerBase,
     question: str,
     answer: str,
-    max_length: int = 256,
+    max_length: int = 512,
 ):
     """학습용: full conversation + instruction-only label masking.
 
@@ -70,7 +70,7 @@ def encode_for_training(
 
 
 def encode_for_inference(
-    tokenizer: PreTrainedTokenizerBase, question: str, max_length: int = 256
+    tokenizer: PreTrainedTokenizerBase, question: str, max_length: int = 512
 ):
     """추론용: prompt까지만 (assistant 응답 시작 직전)."""
     prompt_msgs = _build_messages(question, answer=None)

@@ -42,7 +42,8 @@ class MiniLLaVA(nn.Module):
 
     - CLIP-ViT는 항상 frozen (강력한 사전학습 시각 표현 활용)
     - LLM은 기본 frozen (LLaVA Stage 1 alignment)
-    - Projector만 학습 → 1.6M params 만으로 멀티모달 능력 부여
+    - Stage 1: projector 만 학습 (1.49M params)
+    - Stage 2 (use_lora=True): projector + LoRA on q/k/v/o 동시 학습 (총 3.66M params)
     """
 
     def __init__(
@@ -58,9 +59,15 @@ class MiniLLaVA(nn.Module):
         self.vision = CLIPVisionModel.from_pretrained(vision_model_name)
         self.image_processor = CLIPImageProcessor.from_pretrained(vision_model_name)
 
-        self.llm = AutoModelForCausalLM.from_pretrained(
-            llm_model_name, torch_dtype=torch_dtype
-        )
+        # transformers 5.x 는 dtype=, 4.x 는 torch_dtype= — 둘 다 지원하기 위해 동적 분기
+        try:
+            self.llm = AutoModelForCausalLM.from_pretrained(
+                llm_model_name, dtype=torch_dtype
+            )
+        except TypeError:  # transformers 4.x fallback
+            self.llm = AutoModelForCausalLM.from_pretrained(
+                llm_model_name, torch_dtype=torch_dtype
+            )
         self.tokenizer = AutoTokenizer.from_pretrained(llm_model_name)
 
         # <image> 플레이스홀더 추가

@@ -16,7 +16,7 @@ SYSTEM_PROMPT = (
 @dataclass
 class TrainConfig:
     data_path: str = "data/coco_subset/manifest.json"
-    output_dir: str = "checkpoints/stage1"
+    output_dir: str = "checkpoints/v1_baseline"
 
     batch_size: int = 8
     grad_accum_steps: int = 1

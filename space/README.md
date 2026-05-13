@@ -32,7 +32,8 @@ HuggingFace 의 `LlavaForConditionalGeneration` 같은 고수준 추상화 미�
 
 - 📂 [Code (GitHub)](https://github.com/AD-Styles/vlm-from-scratch)
 - 🤗 [Weights (HF Hub)](https://huggingface.co/AD-Styles/mini-llava-stage2)
-- 📖 [상세 분석 (v1→v2 회고록)](https://github.com/AD-Styles/vlm-from-scratch#-회고--개선의-여정)
+- 📊 [Test A/B/C 결과 표](https://github.com/AD-Styles/vlm-from-scratch#-results)
+- 📖 [v1→v2 회고록 (시행착오 분석)](https://github.com/AD-Styles/vlm-from-scratch#-회고--개선의-여정)
 
 ## 💡 사용 팁
 

@@ -2,7 +2,10 @@
 
 사용:
   python app.py                                  # 랜덤 init projector (파이프라인 시연용)
-  python app.py --checkpoint checkpoints/stage1/projector.pt
+  python app.py --checkpoint checkpoints/v1_baseline/projector.pt   # v1 baseline
+  python app.py \\
+    --checkpoint checkpoints/v2_stage2_lora/projector.pt \\
+    --lora-adapter checkpoints/v2_stage2_lora/lora_adapter            # v2 (권장)
   python app.py --share                          # 공개 링크 생성
 """
 from __future__ import annotations
@@ -26,8 +29,8 @@ HEADER_MD = """
 
 FOOTER_MD = """
 ---
-> 🛠️ Powered by `vlm-from-scratch` — projector만 학습한 LLaVA-1.5 구조.
-> 더 나은 응답 품질을 원한다면 Stage 2 (LoRA Instruction Tuning) 를 추가로 학습하세요.
+> 🛠️ Powered by `vlm-from-scratch` — LLaVA-1.5 구조 직접 구현 (projector + LoRA).
+> v2 (Stage 2 LoRA) 가중치 사용 시 한국어 / OOD 한계는 [GitHub README Test B/C](https://github.com/AD-Styles/vlm-from-scratch#-results) 참조.
 """
 
 EXAMPLES = [
@@ -137,14 +140,14 @@ def parse_args():
     p.add_argument(
         "--checkpoint",
         type=str,
-        default="checkpoints/stage1/projector.pt",
-        help="학습된 projector 가중치 경로",
+        default="checkpoints/v2_stage2_lora/projector.pt",
+        help="학습된 projector 가중치 경로 (예: checkpoints/v1_baseline/projector.pt 또는 v2_stage2_lora)",
     )
     p.add_argument(
         "--lora-adapter",
         type=str,
         default=None,
-        help="Stage 2 LoRA adapter 디렉터리 (선택). 예: checkpoints/v2_stage2/lora_adapter",
+        help="Stage 2 LoRA adapter 디렉터리 (선택). 예: checkpoints/v2_stage2_lora/lora_adapter",
     )
     p.add_argument("--server-name", type=str, default="0.0.0.0")
     p.add_argument("--server-port", type=int, default=7860)

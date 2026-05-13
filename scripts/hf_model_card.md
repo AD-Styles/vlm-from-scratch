@@ -22,8 +22,10 @@ pipeline_tag: image-to-text
 LLaVA-1.5 의 핵심 아키텍처를 처음부터 직접 구현한 멀티모달 LLM 의 학습된 가중치.
 HuggingFace 의 `LlavaForConditionalGeneration` 같은 고수준 추상화 미사용, 융합 로직 직접 구현.
 
+🚀 **Live Demo:** https://huggingface.co/spaces/AD-Styles/mini-llava-demo (설치 없이 즉시 체험)
 📂 **코드 레포:** https://github.com/AD-Styles/vlm-from-scratch
 📝 **상세 분석 (v1→v2 회고록 포함):** [GitHub README](https://github.com/AD-Styles/vlm-from-scratch#readme)
+📊 **Test A/B/C 결과 표:** [GitHub README #-results](https://github.com/AD-Styles/vlm-from-scratch#-results)
 
 ## 🧩 구성
 

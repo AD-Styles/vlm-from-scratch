@@ -1,10 +1,18 @@
-"""Stage 1 학습 — projector만 학습하여 시각 특징을 LLM 임베딩 공간으로 정렬.
+"""Stage 1 / Stage 2 학습 — projector (+ optional LoRA) 만 학습.
 
-사용 예:
+사용 예 (Stage 1 — v1 baseline):
   python -m src.train \\
     --data-path data/coco_subset/manifest.json \\
-    --output-dir checkpoints/stage1 \\
-    --batch-size 8 --epochs 1 --lr 1e-3
+    --output-dir checkpoints/v1_baseline \\
+    --batch-size 2 --grad-accum-steps 4 --epochs 1 --lr 1e-3
+
+사용 예 (Stage 2 — v2 LoRA, v1 projector 이어 학습):
+  python -m src.train \\
+    --data-path data/instruct_subset/manifest.json \\
+    --output-dir checkpoints/v2_stage2_lora \\
+    --init-projector checkpoints/v1_baseline/projector.pt \\
+    --batch-size 2 --grad-accum-steps 4 --epochs 2 --lr 2e-4 \\
+    --use-lora --lora-r 16 --lora-alpha 32
 """
 from __future__ import annotations
 
@@ -62,7 +70,7 @@ def maybe_apply_lora(model: MiniLLaVA, cfg: TrainConfig):
 def parse_args() -> TrainConfig:
     p = argparse.ArgumentParser()
     p.add_argument("--data-path", type=str, required=True)
-    p.add_argument("--output-dir", type=str, default="checkpoints/stage1")
+    p.add_argument("--output-dir", type=str, default="checkpoints/v1_baseline")
     p.add_argument("--batch-size", type=int, default=8)
     p.add_argument("--grad-accum-steps", type=int, default=1)
     p.add_argument("--epochs", type=int, default=1)

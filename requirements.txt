@@ -1,11 +1,14 @@
+# 학습 환경 (RTX 4060 8GB) 에서 검증된 lower bounds.
+# Adapter 호환성을 위해 peft>=0.19.1 필수 (alora_invocation_tokens 신규 필드).
 torch>=2.6.0
 torchvision>=0.21.0
-transformers>=4.45.0
+transformers>=5.0.0
 accelerate>=0.30.0
-peft>=0.10.0
+peft>=0.19.1
 datasets>=2.18.0
+huggingface_hub>=1.0.0
 pillow>=10.0.0
-gradio>=4.20.0
+gradio>=6.0.0
 einops>=0.7.0
 sentencepiece>=0.1.99
 protobuf>=4.25.0

@@ -1,24 +1,37 @@
 """순수 LoRA 가중치 추출 — 1GB → ~10MB.
 
-문제 상황:
-  v2 학습 후 lora_adapter/adapter_model.safetensors 가 약 1GB. 이는 PEFT 가
+⚠️  **경고: 이 가설은 실험으로 반증되었습니다.**
+    실제 슬림 adapter (8.68MB) 로 동일 입력 추론 시 Test A 5문항 중 3문항이
+    명확히 다른 응답으로 변함 (Dog→Cat, White→Brown and black, Hat→Mittens).
+    → embed_tokens / lm_head 는 단순 저장이 아니라 학습된 상태의 일부였음.
+    상세는 README §Step 5 참조: https://github.com/AD-Styles/vlm-from-scratch#step-5--배포-용이성-시도-실패에서-배운-것
+
+    이 스크립트는 **반증된 실험의 기록** 으로만 보존됨. 실제 배포는 원본 1GB 그대로
+    Hugging Face Hub 에 업로드하는 방식 (scripts/upload_to_hf.py) 을 사용하십시오.
+
+──────────────────────────────────────────────────────────
+
+원래 가설 (반증 전):
+  v2 학습 후 lora_adapter/adapter_model.safetensors 가 약 1GB. PEFT 가
   embedding resize (`<image>` 토큰 추가) 를 감지하고 embed_tokens / lm_head 를
-  자동으로 함께 저장했기 때문 (각 ~540MB).
+  자동으로 함께 저장했기 때문 (각 ~540MB). 추론 시 MiniLLaVA.__init__() 가
+  resize_token_embeddings 를 호출하므로 저장된 값은 무관할 것이라 추정.
 
-추론 시 그것들이 정말 필요한가?
-  - MiniLLaVA.__init__() 가 항상 tokenizer.add_special_tokens 후 resize_token_embeddings 호출
-    → embed_tokens / lm_head 는 inference time에 매번 새로 resize 됨
-  - 새 <image> 토큰의 embedding 은 forward 시 image patch features 로 교체됨 (`_merge`)
-    → 새 토큰 embedding 의 random init 값은 절대 사용되지 않음
-  → 결론: embed_tokens / lm_head 를 저장할 필요 없음
+  → 가설: embed_tokens / lm_head 를 제거해도 inference 무영향
+  → **반증**: 응답 품질 명확히 손실 (위 경고 참조)
 
-이 스크립트는:
+추정 원인 (v3 검증 과제):
+  - Qwen2.5 의 tie_word_embeddings=True → LoRA gradient 가 lm_head 를 거쳐
+    embed_tokens 까지 미세 영향
+  - 또는 PEFT 가 resize 감지 시 silent unfreeze
+
+이 스크립트의 동작 (그대로 유지):
   1. 원본 adapter_model.safetensors 에서 LoRA 키만 추출
-  2. embed_tokens, lm_head 는 제외
+  2. embed_tokens, lm_head 제외
   3. adapter_config.json 의 modules_to_save 항목 제거
-  4. 결과: ~10MB slim adapter (GitHub 100MB 제한 통과)
+  4. 결과: ~10MB slim adapter (작동은 하나 품질 손실)
 
-사용:
+사용 (실험 재현 / 검증 목적만):
   python scripts/extract_lora.py \\
     --input-dir checkpoints/v2_stage2_lora/lora_adapter \\
     --output-dir checkpoints/v2_stage2_lora/lora_adapter_slim
@@ -143,9 +156,9 @@ def main():
     print(f"  python app.py --checkpoint checkpoints/v2_stage2_lora/projector.pt \\")
     print(f"                --lora-adapter {output_dir}")
     print()
-    print("[주의] embed_tokens / lm_head 는 제외됨.")
-    print("       MiniLLaVA.__init__() 가 inference 시 매번 resize_token_embeddings 호출하므로 정상 동작.")
-    print("       <image> 토큰 embedding 은 어차피 forward 에서 image patch 로 교체되므로 영향 없음.")
+    print("⚠️  [경고] 이 슬림 adapter 는 실험으로 품질 손실 확인됨 (Test A 5문항 중 3문항 응답 변경).")
+    print("           실제 배포는 원본 1GB 그대로 Hugging Face Hub 에 업로드하는 방식 권장.")
+    print("           상세: README §Step 5 (https://github.com/AD-Styles/vlm-from-scratch#-회고--개선의-여정)")
 
 
 if __name__ == "__main__":
