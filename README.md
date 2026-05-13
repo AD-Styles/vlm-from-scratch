@@ -169,11 +169,6 @@ v1 결과를 분석하고 **3가지 옵션** 을 검토:
 | B) 같은 데이터 더 학습 | epoch ↑, 데이터 ↑ — 단순 양적 증가 | ❌ 방법론적 진보 없음 |
 | C) Stage 2 LoRA 추가 | LLaVA 정통 레시피 (instruction tuning) | ✅ **선택** |
 
-**C 선택 이유:**
-- **포트폴리오 시그널:** "데이터 더 부어봤네" 보다 "LLaVA 학습 레시피를 정확히 이해하고 재현했네" 가 채용 담당자에게 훨씬 매력적
-- **이전 작업과의 연결성:** [unsloth-qlora-finetuning](https://github.com/AD-Styles/unsloth-qlora-finetuning) 의 LoRA 경험을 자연스럽게 확장
-- **NCA-GENL 자격증 준비** 와 시너지
-
 ### Step 3 — v2 학습 중 발견한 데이터 함정
 첫 시도로 VQAv2 단독을 사용했더니 답변의 **90.6% 가 10글자 미만** (Yes/No 위주). 이대로 학습하면 모델이 "Yes." / "No." 만 반복하게 됨.
 
