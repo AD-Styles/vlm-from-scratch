@@ -6,7 +6,6 @@
 |---|---|
 | **Backbone** | CLIP-ViT-B/32 + Qwen2.5-0.5B-Instruct |
 | **학습 환경** | RTX 4060 Laptop · 8GB VRAM (단일 노트북) |
-| **학습 가능 파라미터** | v1: 1.49M · v2: 3.66M (전체의 0.6%) |
 | **학습 시간** | v1: 약 7분 · v2: 약 50분 |
 | **결과 요약** | 영문 VQA **4/5** ✅ · 한국어 ⚠️ catastrophic forgetting · OOD ⚠️ 환각 ([상세](#-결과-results)) |
 | **레퍼런스** | LLaVA-1.5 (Liu et al., 2023) — 동일한 2-Stage 레시피의 mini 버전 (9K 샘플) |
