@@ -58,7 +58,7 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
 
 > Q: "What is in this image?" → A: "A black and white dog in a red frisbee stands on the beach."
 
-**진단:** "dog" 키워드만 정확. 나머지(frisbee, beach, black) 모두 환각. 모델이 **Flickr30k 캡션 패턴(`A [person] in [clothes] is [verb]`)을 모방할 뿐, 질문에 응답하는 능력 부재.** LLaVA-1.5 논문 ([Liu et al., 2023, §4.1](https://arxiv.org/abs/2310.03744)) 의 "Stage 1 alignment limitations" 와 일치.
+**진단:** "dog" 키워드만 정확. 나머지(frisbee, beach, black) 모두 환각. 모델이 **Flickr30k 캡션 패턴(`A [person] in [clothes] is [verb]`)을 모방할 뿐, 질문에 응답하는 능력 부재.**
 
 > 💭 왜 캡션 패턴만 모방하나? Stage 1 은 image embedding 을 LLM 공간에 "정렬" 만 하고 instruction-following 학습은 안 하기 때문. → Stage 2 가 필요한 이유 ([회고록 §Step 2 참조](#-회고록-retrospective))
 
