@@ -11,7 +11,7 @@
 | **결과 요약** | 영문 VQA **4/5** ✅ · 한국어 ⚠️ catastrophic forgetting · OOD ⚠️ 환각 ([상세](#-결과-results)) |
 | **레퍼런스** | LLaVA-1.5 (Liu et al., 2023) — 동일한 2-Stage 레시피의 mini 버전 (9K 샘플) |
 | **사전 학습 가중치** | 🤗 [AD-Styles/mini-llava-stage2](https://huggingface.co/AD-Styles/mini-llava-stage2) (HuggingFace Hub) |
-| **🚀 Live Demo** | [Hugging Face Spaces](https://huggingface.co/spaces/AD-Styles/mini-llava-demo) — 브라우저에서 즉시 체험 (설치 0) |
+| **🚀 Live Demo** | [Hugging Face Spaces](https://huggingface.co/spaces/AD-Styles/mini-llava-demo) — 브라우저에서 즉시 체험 가능 |
 
 
 ---
