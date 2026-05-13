@@ -85,7 +85,7 @@ LLaVA-1.5의 핵심 통찰: **거대 모델 두 개를 학습시키는 것이 �
 | What is on the dog's head? | **Hat.** ✅ | 0.51s |
 | Describe this image in one sentence. | "In this image I can see a cat on the floor." ⚠️ | 1.58s |
 
-**🎯 핵심 발견 — Instruction Tuning 의 결정적 증거:**
+**🎯 핵심 발견 — Instruction Tuning 의 증거:**
 
 v2는 **질문 형식에 따라 응답 포맷을 자동으로 바꿉니다** (단어 / 색상 / Yes-No / 객체 / 문장). 동일 입력의 v1 Q1 응답 — *"A black and white dog in a red frisbee stands on the beach."* — 같은 Flickr30k 캡션 패턴 모방과 명백한 대비. 시각적 정확도 **v1 0/1 (Q1 만 측정) → v2 4/5 (80%)**.
 
