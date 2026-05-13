@@ -1,10 +1,12 @@
-torch>=2.1.0
-torchvision
-transformers>=4.45.0
-peft>=0.10.0
-huggingface_hub>=0.20.0
-pillow>=10.0.0
-gradio>=4.20.0
+# 로컬 학습 환경과 정확히 동일한 버전 - adapter_config.json 호환성 필수
+# (특히 peft 0.19.1: alora_invocation_tokens 등 신규 필드 인식)
+torch==2.6.0
+torchvision==0.21.0
+transformers==5.8.0
+peft==0.19.1
+huggingface_hub==1.14.0
+pillow==12.1.1
+gradio==6.14.0
 einops
 sentencepiece
 protobuf
