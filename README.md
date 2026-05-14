@@ -221,8 +221,6 @@ v1 결과를 분석하고 **3가지 옵션** 을 검토:
 4. **`tie_word_embeddings=False` 로 재학습** — Step 5의 가설 검증 + 슬림 adapter 재시도
 5. **vLLM / Triton Inference Server 통합** — [nlp-triton-deployment](https://github.com/AD-Styles/nlp-triton-deployment) 와 연계, 프로덕션 서빙
 
-이 5단계가 **v3 의 출발점**이 됩니다.
-
 ---
 
 ## ⚠️ 한계 (Limitations) — 정직한 한계 명시
