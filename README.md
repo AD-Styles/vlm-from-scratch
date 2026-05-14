@@ -1,4 +1,4 @@
-# Mini-LLaVA from Scratch.
+# Mini-LLaVA from Scratch
 
 > CLIP-ViT 와 Qwen2.5 를 직접 조립해 만든 멀티모달 LLM. **결과의 완벽함보다 "한계 분석 → 다음 단계 도출" 의 반복 사이클** 을 기록한 포트폴리오.
 
